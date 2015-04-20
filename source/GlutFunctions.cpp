@@ -1,8 +1,9 @@
 #include "GlutFunctions.h"
 
 Vector2i BezierGlutFunctions::screenSize;
-Vector3f BezierGlutFunctions::screenPan = Vector3f(0.0f, 0.0f, -80.0f);
-bool BezierGlutFunctions::verticesVisible;
+Vector3f BezierGlutFunctions::screenPan = Vector3f(0.0f, 0.0f, -60.0f);
+Vector3i BezierGlutFunctions::screenRotate = Vector3i(-45.0f, 0.0f, 0.0f);
+bool BezierGlutFunctions::verticeEditMode;
 
 void BezierGlutFunctions::init(int *argc, char **argv, Vector2i argScreenSize)
 {
@@ -17,7 +18,7 @@ void BezierGlutFunctions::init(int *argc, char **argv, Vector2i argScreenSize)
 	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 	glClearDepth(1.0f);
 
-	verticesVisible = true;
+	verticeEditMode = true;
 	BezierPatch patch;
 	patch.setPoint(0, Vector3f(0.0f, 0.0f, 10.0f));
 	patch.setPoint(1, Vector3f(10.0f, 0.0f, 40.0f));
@@ -55,23 +56,22 @@ void BezierGlutFunctions::idle()
 
 void BezierGlutFunctions::display()
 {
-	static float angle = 0.0f;
-	angle += TIMESTEP;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(110.0, 1.0, 10.0f, 170.0f);
+	gluPerspective(110.0, 1.0, 10.0f, 200.0f);
 	//glOrtho(-(float)screenSize.x / 2.0f, (float)screenSize.x / 2.0f, -(float)screenSize.y / 2.0f, (float)screenSize.y / 2.0f, 10.0f, 200.0f);
 
 	glPushMatrix();
 	glTranslatef(screenPan.x, screenPan.y, screenPan.z);
-	glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
-	glRotatef(angle, 0.0f, 0.0f, 1.0f);
+	glRotatef(screenRotate.z, 0.0f, 0.0f, 1.0f);
+	glRotatef(screenRotate.y, 0.0f, 1.0f, 0.0f);
+	glRotatef(screenRotate.x, 1.0f, 0.0f, 0.0f);
 
 	BezierGlutFunctions::displayGrid();
 	BezierPatchContainer::getInstance()->renderAll();
-	if (verticesVisible)
+	if (verticeEditMode)
 		BezierPatchContainer::getInstance()->renderVertices();
 
 	glPopMatrix();
@@ -81,11 +81,66 @@ void BezierGlutFunctions::display()
 void BezierGlutFunctions::keyboard(unsigned char argKey, int argX, int argY)
 {
 	if (argKey == 'v')
-		verticesVisible = !verticesVisible;
+		verticeEditMode = !verticeEditMode;
+	if (argKey == 'b')
+		BezierPatchContainer::getInstance()->switchActivePatch();
+	if (argKey == 'c')
+		activeVertex = ++activeVertex%9;
+	if (argKey == '1')
+		screenRotate.x = ++screenRotate.x%360;
+	if (argKey == '2')
+		screenRotate.x = --screenRotate.x%360;
+	if (argKey == '3')
+		screenRotate.y = ++screenRotate.y%360;
+	if (argKey == '4')
+		screenRotate.y = --screenRotate.y%360;
+	if (argKey == '5')
+		screenRotate.z = ++screenRotate.z%360;
+	if (argKey == '6')
+		screenRotate.z = --screenRotate.z%360;
 	if (argKey == 'w')
-		screenPan.z += 1.0f;
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(0.0f, 0.0f, 0.5f));
+      else
+			screenPan.z += 1.0f;
+	}
 	if (argKey == 's')
-		screenPan.z -= 1.0f;
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(0.0f, 0.0f, -0.5f));
+      else
+			screenPan.z -= 1.0f;
+	}
+	if (argKey == 'd')
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(-0.5f, 0.0f, 0.0f));
+      else
+			screenPan.x += 1.0f;
+	}
+	if (argKey == 'a')
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(0.5f, 0.0f, 0.0f));
+      else
+			screenPan.x -= 1.0f;
+	}
+	if (argKey == 'e')
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(0.0f, -0.5f, 0.0f));
+      else
+			screenPan.y += 1.0f;
+	}
+	if (argKey == 'q')
+	{
+		if (verticeEditMode)
+			BezierPatchContainer::getInstance()->movePatchPoint(Vector3f(0.0f, 0.5f, 0.0f));
+      else
+			screenPan.y -= 1.0f;
+	}
+
 }
 
 void BezierGlutFunctions::mouseClick(int argButton, int argState, int argX, int argY)

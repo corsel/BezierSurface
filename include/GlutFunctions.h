@@ -19,7 +19,8 @@ namespace BezierGlutFunctions
 {
 	extern Vector2i screenSize;
 	extern Vector3f screenPan;
-	extern bool verticesVisible;
+	extern Vector3i screenRotate;
+	extern bool verticeEditMode;
 
 	void init(int *argc, char **argv, Vector2i argScreenSize = Vector2i(800, 600));
 	void idle();

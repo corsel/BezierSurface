@@ -13,7 +13,7 @@ BezierPatch::BezierPatch()
 	points = new float[27];
 }
 BezierPatch::BezierPatch(float *argPoints)
-	:points(argPoints), Renderable() {}
+	:Renderable(), points(argPoints) {}
 void BezierPatch::render(bool isActive) //virtual implementation
 {
 
@@ -42,16 +42,23 @@ void BezierPatch::renderVertices(bool argActive)
 	}
 	glEnd();
 }
+void BezierPatch::setPoint(int argIndex, Vector3f argCoordinate)
+{
+	if (argIndex >= 9) return;
+   points[3*argIndex] = argCoordinate.x;
+   points[3*argIndex+1] = argCoordinate.y;
+   points[3*argIndex+2] = argCoordinate.z;
+   if (argCoordinate.z < minZ) minZ = argCoordinate.z;
+}
 float *BezierPatch::getPoints()
 {
 	return points;
 }
-void BezierPatch::setPoint(int argIndex, Vector3f argCoordinate)
+void BezierPatch::movePoint(Vector3f argCoordinate)
 {
-	if (argIndex >= 9) return;
-   this->points[argIndex*3] = argCoordinate.x;
-   points[argIndex*3+1] = argCoordinate.y;
-   points[argIndex*3+2] = argCoordinate.z;
+   points[activeVertex*3] += argCoordinate.x;
+   points[activeVertex*3+1] += argCoordinate.y;
+   points[activeVertex*3+2] += argCoordinate.z;
    if (argCoordinate.z <= minZ) minZ = argCoordinate.z;
 }
 
@@ -81,4 +88,12 @@ void BezierPatchContainer::renderVertices()
 	{
 		patchVector[i].renderVertices(activePatch == i);
 	}
+}
+void BezierPatchContainer::switchActivePatch()
+{
+	activePatch = ++activePatch%patchVector.size();
+}
+void BezierPatchContainer::movePatchPoint(Vector3f argCoordinate)
+{
+	patchVector[activePatch].movePoint(argCoordinate);
 }

@@ -26,8 +26,9 @@ public:
 	BezierPatch(float *argPoints);
 	void render(bool isActive = false); //virtual implementation
 	void renderVertices(bool argActive = false);
-	float *getPoints(void);
 	void setPoint(int argIndex, Vector3f argCoordinate);
+	float *getPoints(void);
+	void movePoint(Vector3f argCoordinate);
 };
 
 class BezierPatchContainer //Singleton
@@ -40,8 +41,10 @@ private:
 public:
 	static BezierPatchContainer *getInstance(void);
 	void appendPatch(BezierPatch argPatch);
+	void switchActivePatch(void);
 	void renderAll(void);
 	void renderVertices(void);
+	void movePatchPoint(Vector3f argCoordinate);
 };
 
 #endif //BEZIER_H_INCLUDED
