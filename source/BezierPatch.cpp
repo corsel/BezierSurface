@@ -2,6 +2,7 @@
 
 int activePatch = 0;
 int activeVertex = 0;
+bool verticeEditMode = false;
 float minZ = 0.0f;
 
 Renderable::Renderable() {}
@@ -20,7 +21,7 @@ void BezierPatch::render(bool isActive) //virtual implementation
 	glEnable(GL_MAP2_VERTEX_3);
 	glMap2f(GL_MAP2_VERTEX_3, 0.0f, 1.0f, 3, 3, 0.0f, 1.0f, 9, 3, points);
 	glMapGrid2f(20, 0.0f, 1.0f, 20, 0.0f, 1.0f);
-	if (isActive)
+	if (isActive && verticeEditMode)
 		glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
 	else
 		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);

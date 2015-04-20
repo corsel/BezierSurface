@@ -3,7 +3,6 @@
 Vector2i BezierGlutFunctions::screenSize;
 Vector3f BezierGlutFunctions::screenPan = Vector3f(0.0f, 0.0f, -60.0f);
 Vector3i BezierGlutFunctions::screenRotate = Vector3i(-45.0f, 0.0f, 0.0f);
-bool BezierGlutFunctions::verticeEditMode;
 
 void BezierGlutFunctions::init(int *argc, char **argv, Vector2i argScreenSize)
 {
@@ -18,7 +17,6 @@ void BezierGlutFunctions::init(int *argc, char **argv, Vector2i argScreenSize)
 	glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 	glClearDepth(1.0f);
 
-	verticeEditMode = true;
 	BezierPatch patch;
 	patch.setPoint(0, Vector3f(0.0f, 0.0f, 10.0f));
 	patch.setPoint(1, Vector3f(10.0f, 0.0f, 40.0f));

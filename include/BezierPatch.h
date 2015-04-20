@@ -1,12 +1,13 @@
 #ifndef BEZIER_PATCH_H_INCLUDED
 #define BEZIER_PATCH_H_INCLUDED
 
+#include "Utils.h"
 #include <vector>
 #include <freeglut.h>
-#include "Utils.h"
 
 extern int activePatch;
 extern int activeVertex;
+extern bool verticeEditMode;
 extern float minZ;
 
 class Renderable
